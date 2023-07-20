@@ -17,7 +17,7 @@ talkerRoute.get('/talker', async (_req, res, next) => {
         const talkerData = await readDocument();
 
         if (talkerData.length > 0) {
-            return res.status(200).json({ talkerData });
+            return res.status(200).json(talkerData);
         }
         return res.status(200).json([]);
     } catch (error) {
