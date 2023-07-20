@@ -4,27 +4,29 @@ const path = require('path');
 
 const fileToRead = path.resolve(__dirname, '../talker.json');
 
-
 async function readDocument() {
     const jsonTalkerData = await fs.readFile(fileToRead, 'utf-8');
-    const jsTalkerData = JSON.parse(jsTalkerData); 
+    const jsTalkerData = JSON.parse(jsonTalkerData); 
     return jsTalkerData;
 }
-
 
 const talkerRoute = express.Router();
 
 talkerRoute.get('/talker', async (_req, res, next) => {
     try {
         const talkerData = await readDocument();
-        res.status(200).json(talkerData);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-})
 
-// talkerRoute.use((error, req, res, next) => {
-//     res.status(500).json({ message: error.message })
-// })
+        if (talkerData.length > 0) {
+            return res.status(200).json(talkerData);
+        }
+        return res.status(200).json(talkerData);
+    } catch (error) {
+        next(error)
+    }
+});
+
+talkerRoute.use((error, req, res, next) => {
+    res.status(500).json({ message: error.message })
+})
 
 module.exports = talkerRoute;
