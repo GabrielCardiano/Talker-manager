@@ -1,11 +1,10 @@
 const express = require('express');
-const crypto = require('crypto');
+const tokenGenerator = require('../utils/tokenGenerator');
+const { validateEmail, validatePassword } = require('../middlewares/validateLogin');
 
 const loginRoute = express.Router();
 
-const tokenGenerator = () => crypto.randomBytes(8).toString('hex');
-
-loginRoute.post('/login', async (req, res) => {
+loginRoute.post('/login', validateEmail, validatePassword, async (req, res) => {
     const randomToken = tokenGenerator();
     return res.status(200).json({ token: randomToken });
 });
