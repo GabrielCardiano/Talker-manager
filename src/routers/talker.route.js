@@ -1,5 +1,5 @@
 const express = require('express');
-const readDocument = require('../utils/readDocument');
+const { readDocument, writeDocument } = require('../utils/readAndWriteDocument');
 const validateToken = require('../middlewares/validateToken');
 const validateName = require('../middlewares/validateName');
 const validateAge = require('../middlewares/validateAge');
@@ -42,11 +42,14 @@ talkerRoute.post('/talker',
   validateTalk,
   validatewatchedAt,
   validateRate,
-  async (req, res) => {
-    const talkers = await readDocument();
-    const newTalker = req.body;
-    talkers.push(newTalker);
-    return res.status(201).json(talkers);
+  async (req, res, next) => {
+    try {
+      const newTalker = req.body;
+      await writeDocument(newTalker);
+      return res.status(201).json(newTalker);
+    } catch (error) {
+      next(error);
+    }
   });
 
 talkerRoute.use((error, _req, res, _next) => {
