@@ -77,6 +77,16 @@ talkerRoute.put('/talker/:id',
     return res.status(200).json(updateTalker);
   });
 
+talkerRoute.delete('/talker/:id', validateToken, async (req, res) => {
+  const talkers = await readDocument();
+  const id = Number(req.params.id);
+
+  const removeTalker = talkers.filter((talker) => talker.id !== id);
+  await writeDocument(removeTalker);
+
+  return res.status(204).end();
+});
+
 talkerRoute.use((error, _req, res, _next) => {
   res.status(500).json({ message: error.message });
 });
