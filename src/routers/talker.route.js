@@ -46,8 +46,8 @@ talkerRoute.post('/talker',
     try {
       const talkers = await readDocument();
       const newID = talkers.length + 1;
-      const newtalker = { id: newID, ...req.body }
-      talkers.push(newtalker)
+      const newtalker = { id: newID, ...req.body };
+      talkers.push(newtalker);
       await writeDocument(talkers);
       return res.status(201).json(newtalker);
     } catch (error) {
