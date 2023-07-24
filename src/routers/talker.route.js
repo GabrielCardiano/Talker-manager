@@ -55,6 +55,28 @@ talkerRoute.post('/talker',
     }
   });
 
+talkerRoute.put('/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validatewatchedAt,
+  validateRate,
+  async (req, res, next) => {
+    const talkers = await readDocument();
+    const id = Number(req.params.id);
+    const updateTalker = { id, ...req.body };
+
+    if (!talkers.some((talker) => talker.id === id)) {
+      return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    }
+
+    const index = talkers.findIndex((talker) => talker.id === id);
+    talkers[index] = updateTalker;
+    await writeDocument(talkers);
+    return res.status(200).json(updateTalker);
+  })
+
 talkerRoute.use((error, _req, res, _next) => {
   res.status(500).json({ message: error.message });
 });
