@@ -11,11 +11,7 @@ async function readDocument() {
 }
 
 async function writeDocument(file) {
-    const talkers = await readDocument();
-    const nextId = talkers[talkers.length - 1].id + 1;
-    const newTalkers = { id: nextId, ...file };
-    talkers.push(newTalkers);
-    await writeFile(pathFile, JSON.stringify(talkers));
+    await writeFile(pathFile, JSON.stringify(file));
 }
 
 module.exports = { readDocument, writeDocument };

@@ -44,9 +44,12 @@ talkerRoute.post('/talker',
   validateRate,
   async (req, res, next) => {
     try {
-      const newTalker = req.body;
-      await writeDocument(newTalker);
-      return res.status(201).json(newTalker);
+      const talkers = await readDocument();
+      const newID = talkers.length + 1;
+      const newtalker = { id: newID, ...req.body }
+      talkers.push(newtalker)
+      await writeDocument(talkers);
+      return res.status(201).json(newtalker);
     } catch (error) {
       next(error);
     }
