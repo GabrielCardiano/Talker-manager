@@ -62,7 +62,7 @@ talkerRoute.put('/talker/:id',
   validateTalk,
   validatewatchedAt,
   validateRate,
-  async (req, res, next) => {
+  async (req, res) => {
     const talkers = await readDocument();
     const id = Number(req.params.id);
     const updateTalker = { id, ...req.body };
@@ -75,7 +75,7 @@ talkerRoute.put('/talker/:id',
     talkers[index] = updateTalker;
     await writeDocument(talkers);
     return res.status(200).json(updateTalker);
-  })
+  });
 
 talkerRoute.use((error, _req, res, _next) => {
   res.status(500).json({ message: error.message });
