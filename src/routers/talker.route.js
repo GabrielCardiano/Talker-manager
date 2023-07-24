@@ -10,6 +10,17 @@ const {
 
 const talkerRoute = express.Router();
 
+talkerRoute.get('/talker/search', validateToken, async (req, res, next) => {
+  const talkers = await readDocument();
+  const { q } = req.query;
+
+  if (q) {
+    const searchTalker = talkers.filter((talker) => talker.name.toLowerCase().includes(q.toLowerCase()));
+    return res.status(200).json(searchTalker);
+  }
+  return res.status(200).json(talkers);
+})
+
 talkerRoute.get('/talker', async (_req, res, next) => {
   try {
     const talkerData = await readDocument();
