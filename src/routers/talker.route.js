@@ -1,22 +1,31 @@
 const express = require('express');
 const { readDocument, writeDocument } = require('../utils/readAndWriteDocument');
+const { queryByName, queryByRate, queryByNameAndRate } = require('../utils/queryFunctions');
 const validateToken = require('../middlewares/validateToken');
 const validateName = require('../middlewares/validateName');
 const validateAge = require('../middlewares/validateAge');
 const {
   validateTalk,
   validatewatchedAt,
-  validateRate } = require('../middlewares/validateTalk');
+  validateRate,
+  validateQueryByRate } = require('../middlewares/validateTalk');
 
 const talkerRoute = express.Router();
 
-talkerRoute.get('/talker/search', validateToken, async (req, res) => {
+talkerRoute.get('/talker/search', validateToken, validateQueryByRate, async (req, res) => {
+  const { q, rate } = req.query;
   const talkers = await readDocument();
-  const { q } = req.query;
 
+  if (q && rate) {
+    const searchTalker = queryByNameAndRate(talkers, req);
+    return res.status(200).json(searchTalker);
+  }
+  if (rate) {
+    const searchTalker = queryByRate(talkers, rate);
+    return res.status(200).json(searchTalker);
+  }
   if (q) {
-    const searchTalker = talkers.filter((talker) =>
-      talker.name.toLowerCase().includes(q.toLowerCase()));
+    const searchTalker = queryByName(talkers, q);
     return res.status(200).json(searchTalker);
   }
   return res.status(200).json(talkers);
