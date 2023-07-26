@@ -8,6 +8,7 @@ const {
   validateTalk,
   validatewatchedAt,
   validateRate,
+  validateRateForPatch,
   validateQueryByRate } = require('../middlewares/validateTalk');
 
 const talkerRoute = express.Router();
@@ -107,6 +108,20 @@ talkerRoute.delete('/talker/:id', validateToken, async (req, res) => {
 
   return res.status(204).end();
 });
+
+talkerRoute.patch('/talker/rate/:id',
+  validateToken,
+  validateRateForPatch,
+  async (req, res) => {
+    const talkers = await readDocument();
+    const id = Number(req.params.id);
+    const { rate } = req.body;
+
+    const index = talkers.findIndex((talker) => talker.id === id);
+    talkers[index].talk.rate = rate;
+    await writeDocument(talkers);
+    return res.status(204).end();
+  });
 
 talkerRoute.use((error, _req, res, _next) => {
   res.status(500).json({ message: error.message });
