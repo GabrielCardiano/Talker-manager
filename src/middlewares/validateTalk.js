@@ -67,8 +67,20 @@ function validateQueryByRate(req, res, next) {
       message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
     });
   }
-
   next();
+}
+
+function validateQueryByDate(req, res, next) {
+  const { date } = req.query;
+
+  const validFormat = /^(0[1-9]|[1-2]\d|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  const validDate = validFormat.test(date);
+
+  if (!date || validDate) {
+    return next();
+  }
+  return res.status(400).json({ message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"' });
+
 }
 
 module.exports = {
@@ -77,4 +89,5 @@ module.exports = {
   validateRate,
   validateRateForPatch,
   validateQueryByRate,
+  validateQueryByDate,
 };

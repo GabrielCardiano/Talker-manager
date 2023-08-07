@@ -1,17 +1,21 @@
-function queryByName(talkersArray, queryName) {
-    return talkersArray.filter((talker) =>
-        talker.name.toLowerCase().includes(queryName.toLowerCase()));
+const { readDocument } = require('./readAndWriteDocument');
+
+async function queryByName(query) {
+  const talkers = await readDocument();
+
+  if (query) {
+    return talkers.filter((talker) =>
+      talker.name.toLowerCase().includes(query.toLowerCase()));
+  }
+  return talkers;
 }
 
 function queryByRate(talkersArray, rate) {
-    return talkersArray.filter((talker) => talker.talk.rate === Number(rate));
+  return talkersArray.filter((talker) => talker.talk.rate === Number(rate));
 }
 
-function queryByNameAndRate(talkersArray, req) {
-    const { q, rate } = req.query;
-    const filterByRate = queryByRate(talkersArray, rate);
-    const filterByName = queryByName(filterByRate, q);
-    return filterByName;
+function queryByDate(talkersArray, date) {
+  return talkersArray.filter((talker) => talker.talk.watchedAt === date);
 }
 
-module.exports = { queryByName, queryByRate, queryByNameAndRate };
+module.exports = { queryByName, queryByRate, queryByDate };

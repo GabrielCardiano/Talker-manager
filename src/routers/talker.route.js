@@ -1,6 +1,6 @@
 const express = require('express');
 const { readDocument, writeDocument } = require('../utils/readAndWriteDocument');
-const { queryByName, queryByRate, queryByNameAndRate } = require('../utils/queryFunctions');
+const { queryByName, queryByRate, queryByDate } = require('../utils/queryFunctions');
 const validateToken = require('../middlewares/validateToken');
 const validateName = require('../middlewares/validateName');
 const validateAge = require('../middlewares/validateAge');
@@ -9,28 +9,43 @@ const {
   validatewatchedAt,
   validateRate,
   validateRateForPatch,
-  validateQueryByRate } = require('../middlewares/validateTalk');
+  validateQueryByRate,
+  validateQueryByDate } = require('../middlewares/validateTalk');
+const findAll = require('../database/talkersDB');
 
 const talkerRoute = express.Router();
 
-talkerRoute.get('/talker/search', validateToken, validateQueryByRate, async (req, res) => {
-  const { q, rate } = req.query;
-  const talkers = await readDocument();
+talkerRoute.get('/talker/search',
+  validateToken,
+  validateRate,
+  // validateQueryByDate,
+  async (req, res) => {
+    const { q, rate, date } = req.query;
+    let searchByName = await queryByName(q);
 
-  if (q && rate) {
-    const searchTalker = queryByNameAndRate(talkers, req);
-    return res.status(200).json(searchTalker);
+    // if (rate) {
+    //   searchByName = queryByRate(searchByName, rate);
+    // }
+    // if (date) {
+    //   searchByName = queryByDate(searchByName, date);
+    // }
+
+    return res.status(200).json(searchByName);
+  });
+
+talkerRoute.get('/talker/db', async (req, res, next) => {
+  try {
+    const talkersDB = await findAll();
+
+    if (talkersDB) {
+      return res.status(200).json(talkersDB)
+    }
+    return res.status(200).json([]);
+  } catch (error) {
+    next(error)
   }
-  if (rate) {
-    const searchTalker = queryByRate(talkers, rate);
-    return res.status(200).json(searchTalker);
-  }
-  if (q) {
-    const searchTalker = queryByName(talkers, q);
-    return res.status(200).json(searchTalker);
-  }
-  return res.status(200).json(talkers);
-});
+
+})
 
 talkerRoute.get('/talker', async (_req, res, next) => {
   try {
