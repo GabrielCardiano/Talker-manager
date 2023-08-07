@@ -10,7 +10,7 @@ async function findAll() {
     talk: {
       rate: talker.talk_rate,
       watchedAt: talker.talk_watched_at,
-    }
+    },
   }));
 }
 

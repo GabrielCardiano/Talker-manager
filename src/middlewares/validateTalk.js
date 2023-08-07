@@ -80,7 +80,6 @@ function validateQueryByDate(req, res, next) {
     return next();
   }
   return res.status(400).json({ message: 'O parâmetro "date" deve ter o formato "dd/mm/aaaa"' });
-
 }
 
 module.exports = {

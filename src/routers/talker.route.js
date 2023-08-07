@@ -1,6 +1,6 @@
 const express = require('express');
 const { readDocument, writeDocument } = require('../utils/readAndWriteDocument');
-const { queryByName, queryByRate, queryByDate } = require('../utils/queryFunctions');
+const { queryByName } = require('../utils/queryFunctions');
 const validateToken = require('../middlewares/validateToken');
 const validateName = require('../middlewares/validateName');
 const validateAge = require('../middlewares/validateAge');
@@ -9,8 +9,7 @@ const {
   validatewatchedAt,
   validateRate,
   validateRateForPatch,
-  validateQueryByRate,
-  validateQueryByDate } = require('../middlewares/validateTalk');
+} = require('../middlewares/validateTalk');
 const findAll = require('../database/talkersDB');
 
 const talkerRoute = express.Router();
@@ -20,8 +19,8 @@ talkerRoute.get('/talker/search',
   validateRate,
   // validateQueryByDate,
   async (req, res) => {
-    const { q, rate, date } = req.query;
-    let searchByName = await queryByName(q);
+    const { q } = req.query;
+    const searchByName = await queryByName(q);
 
     // if (rate) {
     //   searchByName = queryByRate(searchByName, rate);
@@ -38,14 +37,13 @@ talkerRoute.get('/talker/db', async (req, res, next) => {
     const talkersDB = await findAll();
 
     if (talkersDB) {
-      return res.status(200).json(talkersDB)
+      return res.status(200).json(talkersDB);
     }
     return res.status(200).json([]);
   } catch (error) {
-    next(error)
+    next(error);
   }
-
-})
+});
 
 talkerRoute.get('/talker', async (_req, res, next) => {
   try {
