@@ -7,7 +7,6 @@ async function queryByName(query) {
     return talkers.filter((talker) =>
       talker.name.toLowerCase().includes(query.toLowerCase()));
   }
-
   return talkers;
 }
 

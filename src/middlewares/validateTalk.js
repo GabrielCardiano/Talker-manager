@@ -59,15 +59,15 @@ function validateRateForPatch(req, res, next) {
 }
 
 function validateQueryByRate(req, res, next) {
-  const rate = Number(req.query.rate);
-  const invalidRate = rate < 1 || rate > 5 || !Number.isInteger(rate);
-
-  if (invalidRate) {
-    return res.status(400).json({
-      message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
-    });
+  const { rate } = req.query;
+  if (rate === undefined
+    || (Number(rate) >= 1 && Number(rate) <= 5 && Number.isInteger(Number(rate)))) {
+    return next();
   }
-  next();
+
+  return res.status(400).json({
+    message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
+  });
 }
 
 function validateQueryByDate(req, res, next) {
