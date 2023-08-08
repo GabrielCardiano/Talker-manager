@@ -11,7 +11,6 @@ const {
   validateRateForPatch,
   validateQueryByRate,
   // validateQueryByDate,
-  // validateQueryByRate,
 } = require('../middlewares/validateTalk');
 const findAll = require('../database/talkersDB');
 
@@ -27,7 +26,7 @@ talkerRoute.get('/talker/search',
       let searchByName = await queryByName(q);
       
       if (rate) {
-        searchByName = queryByRate(searchByName, rate)
+        searchByName = queryByRate(searchByName, rate);
         }
         return res.status(200).json(searchByName);
     } catch (error) {
