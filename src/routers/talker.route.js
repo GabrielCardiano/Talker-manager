@@ -9,6 +9,8 @@ const {
   validatewatchedAt,
   validateRate,
   validateRateForPatch,
+  // validateQueryByDate,
+  // validateQueryByRate,
 } = require('../middlewares/validateTalk');
 const findAll = require('../database/talkersDB');
 
@@ -16,20 +18,25 @@ const talkerRoute = express.Router();
 
 talkerRoute.get('/talker/search',
   validateToken,
-  validateRate,
+  // validateQueryByRate,
   // validateQueryByDate,
-  async (req, res) => {
+  async (req, res, next) => {
     const { q } = req.query;
-    const searchByName = await queryByName(q);
-
+    try {
+      const searchByName = await queryByName(q);
+      return res.status(200).json(searchByName);
+      // if (rate) {
+      //  return talkers (talkersByName, rate)
+      // }
+    } catch (error) {
+      next();
+    }
     // if (rate) {
-    //   searchByName = queryByRate(searchByName, rate);
+    //   searchByName (searchByName, rate);
     // }
     // if (date) {
     //   searchByName = queryByDate(searchByName, date);
     // }
-
-    return res.status(200).json(searchByName);
   });
 
 talkerRoute.get('/talker/db', async (req, res, next) => {
