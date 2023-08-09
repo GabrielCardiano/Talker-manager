@@ -15,6 +15,7 @@ function queryByRate(talkersArray, rate) {
 }
 
 function queryByDate(talkersArray, date) {
+  console.log(talkersArray);
   return talkersArray.filter((talker) => talker.talk.watchedAt === date);
 }
 
